@@ -22,6 +22,12 @@
 #define ___ &trans
 #define XXX &none
 
+#define VIAL_BLANK \
+    XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX \
+    XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX \
+    XXX XXX XXX XXX XXX XXX &kp C_MUTE &mkp MCLK XXX XXX XXX XXX XXX XXX \
+    XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX
+
 / {
     behaviors {
         /* Vial's second encoder emits mouse-wheel events rather than keycodes. */
@@ -68,7 +74,7 @@
 
                 // Left row 1 / right row 1
                 &kp CAPSLOCK  &kp A       &kp S       &kp D       &kp F       &kp G
-                &kp H         &kp J       &kp K       &kp L       &kp BSLH     &kp RET
+                &kp H         &kp J       &kp K       &kp L       &kp SEMI     &kp RET
 
                 // Left row 2 / center keys / right row 2
                 &kp LSHFT     &kp Z       &kp X       &kp C       &kp V       &kp B
@@ -129,6 +135,38 @@
             >;
             sensor-bindings = <&inc_dec_kp C_VOL_DN C_VOL_UP
                                &enc_scroll>;
+        };
+
+        /* Untitled.vil contains six additional layers with only the fixed
+         * mute and middle-click positions populated. */
+        vial_layer_4 {
+            display-name = "L4";
+            bindings = <VIAL_BLANK>;
+        };
+
+        vial_layer_5 {
+            display-name = "L5";
+            bindings = <VIAL_BLANK>;
+        };
+
+        vial_layer_6 {
+            display-name = "L6";
+            bindings = <VIAL_BLANK>;
+        };
+
+        vial_layer_7 {
+            display-name = "L7";
+            bindings = <VIAL_BLANK>;
+        };
+
+        vial_layer_8 {
+            display-name = "L8";
+            bindings = <VIAL_BLANK>;
+        };
+
+        vial_layer_9 {
+            display-name = "L9";
+            bindings = <VIAL_BLANK>;
         };
     };
 };

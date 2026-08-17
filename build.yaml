@@ -1,6 +1,7 @@
 include:
   - board: cornix_left//zmk
     shield: cornix_indicator
+    snippet: studio-rpc-usb-uart
     artifact-name: cornix_left_default
 
   # - board: cornix_ph_left//zmk
@@ -14,6 +15,10 @@ include:
   - board: cornix_right//zmk
     shield: settings_reset
     artifact-name: reset
+
+  - board: cornix_left//zmk
+    shield: settings_reset
+    artifact-name: reset_left
 
   # - board: seeeduino_xiao
   #   shield: cornix_yads dongle_screen
