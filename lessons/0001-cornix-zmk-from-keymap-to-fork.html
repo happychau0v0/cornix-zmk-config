@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 1: Cornix ZMK from keymap to fork</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<main>
+  <p class="kicker">Lesson 1 · 10 minutes</p>
+  <h1>From a Vial layout to a working ZMK fork</h1>
+  <p class="lede">The central idea is a pipeline: describe hardware, describe behavior, compile two images, flash them, then version the source.</p>
+
+  <h2>1. The mental model</h2>
+  <div class="grid">
+    <section class="card"><h3>Hardware description</h3><p>Board DTS files say which nRF52840 pins are rows, columns, encoders, LEDs, and battery inputs.</p></section>
+    <section class="card"><h3>User configuration</h3><p><code>config/cornix.keymap</code> maps positions to keys; <code>cornix.conf</code> enables features such as NKRO.</p></section>
+    <section class="card"><h3>Build targets</h3><p><code>build.yaml</code> asks for a left central image and a right peripheral image.</p></section>
+    <section class="card"><h3>Firmware</h3><p>The compiler turns each target into a UF2 file for the nRF52840 bootloader.</p></section>
+  </div>
+  <p>That is why changing a source file does nothing to the keyboard until the correct UF2 is built and flashed to the correct half.</p>
+
+  <h2>2. How we converted your original layout</h2>
+  <p><code>Untitled.vil</code> is Vial's saved data, not a ZMK firmware image. We read its layers and physical positions, then translated keycodes and behaviors:</p>
+  <ul>
+    <li>Vial <code>KC_Q</code> becomes ZMK <code>&amp;kp Q</code>.</li>
+    <li>Vial Bluetooth profile actions became ZMK <code>&amp;bt BT_SEL 0</code>, <code>1</code>, and <code>2</code>.</li>
+    <li>Vial mouse middle-click became <code>&amp;mkp MCLK</code>.</li>
+    <li>Vial NKRO magic keys became no-ops because NKRO is enabled permanently in <code>cornix.conf</code>.</li>
+  </ul>
+  <p>The important debugging move was checking the physical matrix transform before reversing keys. The right row is visually reversed by the board's matrix numbering, while the left row is not; the board metadata confirmed that orientation.</p>
+
+  <h2>3. Why the left and right images differ</h2>
+  <p>The left half is the <strong>central</strong>: it owns the shared keymap state, talks to the Mac over USB or Bluetooth, and exposes ZMK Studio. The right half is the <strong>peripheral</strong>: it scans its own keys and sends positions to the left over split BLE. So a right half not appearing in ZMK Studio is normally expected.</p>
+  <div class="callout"><strong>Rule of thumb:</strong> if the left works by itself but right keys do not arrive, investigate the split BLE pairing, right-side firmware, power, and physical radio—not the Mac's NKRO setting first.</div>
+
+  <h2>4. Why a normal reflash did not fix pairing</h2>
+  <p>ZMK stores Bluetooth bonds and ZMK Studio changes in persistent flash. Installing a normal UF2 usually preserves those settings. The recovery image enables <code>CONFIG_ZMK_SETTINGS_RESET_ON_START</code> and disables BLE temporarily, so both halves can be cleared before either tries to pair.</p>
+  <pre><code>1. right_settings_reset.uf2 &rarr; right half
+2. left_settings_reset.uf2  &rarr; left half
+3. right.uf2                &rarr; right half
+4. left.uf2                 &rarr; left half
+5. power-cycle both, forget the old Mac pairing, pair again</code></pre>
+  <p>This is why adding the missing right reset image fixed your connection.</p>
+
+  <h2>5. What “push to a fork” means</h2>
+  <p>A fork is a separate GitHub repository connected to the original upstream repository. In this checkout, <code>origin</code> still names <code>camh/cornix-zmk-config</code>; <code>fork</code> names your personal copy. We pushed the five local commits to your fork's <code>main</code> branch:</p>
+  <pre><code>git status                 # is the tracked worktree clean?
+git log --oneline -5       # what commits are we publishing?
+git remote -v              # where will fetch and push go?
+git push fork main         # publish to your fork</code></pre>
+  <p>The dependency folders were intentionally left untracked. They are local build inputs, not part of the configuration changes we meant to publish.</p>
+
+  <h2>6. Your first practice change</h2>
+  <ol>
+    <li>Open <code>config/cornix.keymap</code> and find a single <code>&amp;kp</code> binding in the base layer.</li>
+    <li>Change one key to another simple keycode.</li>
+    <li>Run <code>git diff -- config/cornix.keymap</code> and explain the change in plain language.</li>
+    <li>After we review it, build, flash, commit, and push it.</li>
+  </ol>
+
+  <h2>Quick check</h2>
+  <details><summary>Why does the right half not normally show in ZMK Studio?</summary><p>Because the left half is the central and the right half is its split-BLE peripheral. Studio talks to the central.</p></details>
+  <details><summary>Why reset both halves?</summary><p>Each controller stores its own pairing state. Clearing only one can leave the two sides with incompatible stored bonds.</p></details>
+  <details><summary>Where should a normal keymap edit go?</summary><p><code>config/cornix.keymap</code>, followed by a rebuild and flashing the corresponding normal firmware.</p></details>
+
+  <p class="small">Primary references: <a href="https://zmk.dev/docs/features/split-keyboards">ZMK split keyboards</a>, <a href="https://zmk.dev/docs/config/settings">ZMK persistent settings</a>, <a href="https://zmk.dev/docs/troubleshooting/connection-issues">ZMK connection issues</a>, and <a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo?tool=cli">GitHub forks with the CLI</a>. Ask me to turn any section into a second lesson.</p>
+</main>
+</body>
+</html>
