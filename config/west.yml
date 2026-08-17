@@ -38,6 +38,8 @@ manifest:
       revision: main
     - name: prospector-zmk-module
       remote: carrefinho
-      revision: main
+      # Its main branch targets the older ZMK/Zephyr stack; this branch is
+      # compatible with the current Zephyr 4.1-based ZMK checkout.
+      revision: feat/new-status-screens
   self:
     path: config

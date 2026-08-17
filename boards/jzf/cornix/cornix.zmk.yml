@@ -8,6 +8,6 @@ features:
   - encoder
   # - led
 siblings:
-  - cornix_left
-  - cornix_right
-  - cornix_ph_left
+  - cornix_left//zmk
+  - cornix_right//zmk
+  - cornix_ph_left//zmk
