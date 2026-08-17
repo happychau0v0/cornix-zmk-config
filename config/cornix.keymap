@@ -1,172 +1,134 @@
 /*
- * Copyright (c) 2020 The ZMK Contributors
+ * Converted from Untitled.vil.
  *
- * SPDX-License-Identifier: MIT
+ * Vial stores the right half in matrix order (outside-to-inside), while the
+ * ZMK physical layout is written left-to-right.  The right-hand rows below
+ * are therefore reversed so the physical keys keep their original labels.
  */
 
-#include "zmk-helpers/helper.h"
-#include "includes/cornix54.h"
 #include <behaviors.dtsi>
-#include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/keys.h>
 
 #define BASE 0
-#define NAV 1
-#define NUM 2
-#define FUN 3
-#define SYM 4
-#define MOUSE 5
+#define ALT  1
+#define NUM  2
+#define FN   3
+#define NAV  2
+#define FUN  3
 
-#define ___ &trans
-
-#define UMDO LG(Z)
-#define REDO LG(LS(Z))
-#define MEH LC(LS(LALT))
-
-#define PLAY C_PP
-#define NEXT C_NEXT
-#define PREV C_PREV
-#define VOL_DN C_VOL_DN
-#define VOL_UP C_VOL_UP
-#define KAST KP_ASTERISK
-#define KPSL KP_SLASH
-#define MDASH LS(LA(MINUS))
-
-#define NXTB F17 // next tab
-#define PVTB F16 // prev tab
-#define FWD LA(F17) // forward
-#define BCK LA(F16) // back
-
-/* Homerow Mods */
-
-#define KEYS_L LT0 LT1 LT2 LT3 LT4 LT5 LM0 LM1 LM2 LM3 LM4 LM5 LB0 LB1 LB2 LB3 LB4 LB5  // left hand
-#define KEYS_R RT0 RT1 RT2 RT3 RT4 RT5 RM0 RM1 RM2 RM3 RM4 RM5 RB0 RB1 RB2 RB3 RB4 RB5  // right hand
-#define THUMBS LH2 LH1 LH0 RH0 RH1 RH2
-
-#define MAKE_HRM(NAME, HOLD, TAP, TRIGGER_POS)                                 \
-     ZMK_HOLD_TAP(NAME, bindings = <HOLD>, <TAP>; flavor = "balanced";         \
-               tapping-term-ms = <211>;                                        \
-               require-prior-idle-ms = <80>; hold-trigger-on-release;          \
-               hold-trigger-key-positions = <TRIGGER_POS>;)
-
-MAKE_HRM(hml, &kp, &kp, KEYS_R THUMBS) // Left-hand HRMs.
-MAKE_HRM(hmr, &kp, &kp, KEYS_L THUMBS) // Right-hand HRMs.
-
-#include "includes/combos.dtsi"
 #include "includes/mouse.dtsi"
 
+#define ___ &trans
+#define XXX &none
+
 / {
-   keymap {
-      compatible = "zmk,keymap";
+    behaviors {
+        /* Vial's second encoder emits mouse-wheel events rather than keycodes. */
+        enc_scroll: enc_scroll {
+            compatible = "zmk,behavior-sensor-rotate";
+            #sensor-binding-cells = <0>;
+            bindings = <U_WH_U>, <U_WH_D>;
+        };
+    };
 
-      default_layer {
-         display-name = "BASE";
-         bindings = <
-// ╭──────────────┬──────────────┬──────────────┬──────────────┬──────────────┬──────────────╮                               ╭──────────────┬──────────────┬──────────────┬──────────────┬────────────────┬──────────────╮
-     &kp ESC        &kp Q          &kp W          &kp E          &kp R          &kp T                                          &kp Y          &kp U          &kp I          &kp O          &kp P            &kp BSLH   
-// ├──────────────┼──────────────┼──────────────┼──────────────┼──────────────┼──────────────┤                               ├──────────────┼──────────────┼──────────────┼──────────────┼────────────────┼──────────────┤
-     &kp TAB        &hml LSHFT A   &hml LCTRL S   &hml LALT D    &hml LGUI F    &lt NUM G                                      &kp H          &hmr RGUI J    &hmr RALT K    &hmr RCTRL L   &hmr RSHFT SEMI  &kp SQT   
-// ├──────────────┼──────────────┼──────────────┼──────────────┼──────────────┼──────────────┤──────────────╮ ╭──────────────├──────────────┼──────────────┼──────────────┼──────────────┼────────────────┼──────────────┤
-     &hml MEH RET   &lt SYM Z      &kp X          &kp C          &lt MOUSE V    &kp B          &kp C_MUTE       &none          &kp N          &kp M          &kp COMMA      &kp DOT        &lt SYM MINUS    &hmr MEH SLASH
-// ╰──────────────┴──────────────┴──────────────┴──────────────┼──────────────┼──────────────┤──────────────╯ ╰──────────────├──────────────┼──────────────┼──────────────┼──────────────┼────────────────┼──────────────╯
-     &hml MEH RET   &none          &none          &kp LGUI       &mo NAV        &kp SPACE                                      &kp BKSP       &mo NUM        &lt FUN TAB    &none          &none            &tog MOUSE
-// ╰──────────────┴──────────────┴──────────────┴──────────────┴──────────────┴──────────────╯                               ╰──────────────┴──────────────┴──────────────┴──────────────┴────────────────┴──────────────╯ 
-         >;
-         sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp PG_DN PG_UP>;
-      };
+    keymap {
+        compatible = "zmk,keymap";
 
+        default_layer {
+            display-name = "BASE";
+            bindings = <
+                // Left row 0 / right row 0
+                &kp TAB       &kp Q       &kp W       &kp E       &kp R       &kp T
+                &kp Y         &kp U       &kp I       &kp O       &kp P       &kp BSPC
 
-      nav_layer {
-         display-name = "NAV";
-         bindings = <
-// ╭──────────────┬──────────────┬──────────────┬──────────────┬──────────────┬──────────────╮                               ╭──────────────┬──────────────┬──────────────┬──────────────┬──────────────┬──────────────╮
-     ___            ___            &kp BCK        &kp VOL_UP     &kp FWD        ___                                            &kp LC(LEFT)   &kp LA(LEFT)   &kp UP         &kp LA(RIGHT)  &kp LC(RIGHT)  &kp DEL
-// ├──────────────┼──────────────┼──────────────┼──────────────┼──────────────┼──────────────┤                               ├──────────────┼──────────────┼──────────────┼──────────────┼──────────────┼──────────────┤
-     ___            ___            &kp PREV       &kp VOL_DN     &kp NEXT       &kp REDO                                       &kp PG_UP      &kp LEFT       &kp DOWN       &kp RIGHT      ___            &kp LG(BKSP)
-// ├──────────────┼──────────────┼──────────────┼──────────────┼──────────────┼──────────────┤──────────────╮ ╭──────────────├──────────────┼──────────────┼──────────────┼──────────────┼──────────────┼──────────────┤
-     ___            ___            &kp PVTB       &kp PLAY       &kp NXTB       &kp UMDO       ___              ___            &kp PG_DN      ___            ___            ___            ___            ___   
-// ╰──────────────┴──────────────┴──────────────┴──────────────┼──────────────┼──────────────┤──────────────╯ ╰──────────────├──────────────┼──────────────┼──────────────┼──────────────┼──────────────┼──────────────╯
-     ___            ___            ___            ___            ___            ___                                            ___            ___            ___            ___            ___            ___
-// ╰──────────────┴──────────────┴──────────────┴──────────────┴──────────────┴──────────────╯                               ╰──────────────┴──────────────┴──────────────┴──────────────┴──────────────┴──────────────╯
-         >;
-      };
+                // Left row 1 / right row 1
+                &kp CAPSLOCK  &kp A       &kp S       &kp D       &kp F       &kp G
+                &kp H         &kp J       &kp K       &kp L       &kp BSLH     &kp RET
 
-      numbers_layer {
-         display-name = "NUM";
-         bindings = <
-// ╭──────────────┬──────────────┬──────────────┬──────────────┬──────────────┬──────────────╮                               ╭──────────────┬──────────────┬──────────────┬──────────────┬──────────────┬──────────────╮
-     ___            ___            ___            ___            ___            ___                                            &kp KAST       &kp N7         &kp N8         &kp N9         &kp KP_PLUS    ___   
-// ├──────────────┼──────────────┼──────────────┼──────────────┼──────────────┼──────────────┤                               ├──────────────┼──────────────┼──────────────┼──────────────┼──────────────┼──────────────┤
-     ___            ___            ___            ___            ___            ___                                            &kp KPSL       &kp N4         &kp N5         &kp N6         &kp KP_MINUS   &kp KP_N0
-// ├──────────────┼──────────────┼──────────────┼──────────────┼──────────────┼──────────────┤──────────────╮ ╭──────────────├──────────────┼──────────────┼──────────────┼──────────────┼──────────────┼──────────────┤
-     ___            ___            ___            ___            ___            ___            ___              ___            &kp CMMA       &kp N1         &kp N2         &kp N3         &kp KP_DOT     &kp COLON
-// ╰──────────────┴──────────────┴──────────────┴──────────────┼──────────────┼──────────────┤──────────────╯ ╰──────────────├──────────────┼──────────────┼──────────────┼──────────────┼──────────────┼──────────────╯
-     ___            ___            ___            ___            ___            ___                                            ___            ___            ___            ___            ___            ___
-// ╰──────────────┴──────────────┴──────────────┴──────────────┴──────────────┴──────────────╯                               ╰──────────────┴──────────────┴──────────────┴──────────────┴──────────────┴──────────────╯
-         >;
-      };
+                // Left row 2 / center keys / right row 2
+                &kp LSHFT     &kp Z       &kp X       &kp C       &kp V       &kp B
+                &kp C_MUTE    &mkp MCLK   &kp N       &kp M       &kp COMMA   &kp DOT
+                &kp UP        &kp SLASH
 
+                // Left row 3 / right row 3
+                &kp LCTRL     &kp LGUI    &kp LALT    &to ALT      &mo NUM      &kp SPACE
+                &kp SPACE     &mo FN      &kp RSHFT   &kp LEFT     &kp DOWN     &kp RIGHT
+            >;
+            sensor-bindings = <&inc_dec_kp C_VOL_DN C_VOL_UP
+                               &enc_scroll>;
+        };
 
-      function_layer {
-         display-name = "FUN";
-         bindings = <
-// ╭──────────────┬──────────────┬──────────────┬──────────────┬──────────────┬──────────────╮                               ╭──────────────┬──────────────┬──────────────┬──────────────┬──────────────┬──────────────╮
-     &bt BT_CLR     &kp F11        &kp F12        &kp F13        &kp F14        &kp F15                                        ___            ___            ___            ___            ___            ___   
-// ├──────────────┼──────────────┼──────────────┼──────────────┼──────────────┼──────────────┤                               ├──────────────┼──────────────┼──────────────┼──────────────┼──────────────┼──────────────┤
-     &bt BT_SEL 0   &kp F6         &kp F7         &kp F8         &kp F9         &kp F10                                        ___            ___            ___            ___            ___            ___   
-// ├──────────────┼──────────────┼──────────────┼──────────────┼──────────────┼──────────────┤──────────────╮ ╭──────────────├──────────────┼──────────────┼──────────────┼──────────────┼──────────────┼──────────────┤
-     &bt BT_SEL 1   &kp F1         &kp F2         &kp F3         &kp F4         &kp F5         ___              ___            ___            ___            ___            ___            ___            ___   
-// ╰──────────────┴──────────────┴──────────────┴──────────────┼──────────────┼──────────────┤──────────────╯ ╰──────────────├──────────────┼──────────────┼──────────────┼──────────────┼──────────────┼──────────────╯
-     ___            ___            ___            ___            ___            ___                                            ___            ___            ___            ___            ___            ___
-// ╰──────────────┴──────────────┴──────────────┴──────────────┴──────────────┴──────────────╯                               ╰──────────────┴──────────────┴──────────────┴──────────────┴──────────────┴──────────────╯
-         >;
-      };
+        alternate_layer {
+            display-name = "ALT";
+            bindings = <
+                // Left row 0 / right row 0
+                &kp TAB       &kp Q       &kp W       &kp E       &kp R       &kp T
+                &kp Y         &kp U       &kp I       &kp O       &kp P       &kp BSPC
 
-      symbols_layer {
-         display-name = "SYM";
-         bindings = <
-// ╭──────────────┬──────────────┬──────────────┬──────────────┬──────────────┬──────────────╮                               ╭──────────────┬──────────────┬──────────────┬──────────────┬──────────────┬──────────────╮
-     ___            &kp EXCL       &kp AT         &kp HASH       &kp DLLR       &kp PRCNT                                      &kp CARET      &kp AMPS       &kp STAR       &kp GRAVE      &kp TILDE      ___   
-// ├──────────────┼──────────────┼──────────────┼──────────────┼──────────────┼──────────────┤                               ├──────────────┼──────────────┼──────────────┼──────────────┼──────────────┼──────────────┤
-     ___            &kp LA(SEMI)   &kp LBKT       &kp RBKT       &kp LBRC       &kp RBRC                                       &kp LPAR       &kp RPAR       &kp SQT        &kp DQT        &kp MDASH      ___   
-// ├──────────────┼──────────────┼──────────────┼──────────────┼──────────────┼──────────────┤──────────────╮ ╭──────────────├──────────────┼──────────────┼──────────────┼──────────────┼──────────────┼──────────────┤
-     ___            ___            &kp BSLH       &kp PIPE       &kp UNDER      &kp MINUS      ___              ___            &kp EQUAL      &kp PLUS       &kp SLASH      &kp QMARK      ___            ___   
-// ╰──────────────┴──────────────┴──────────────┴──────────────┼──────────────┼──────────────┤──────────────╯ ╰──────────────├──────────────┼──────────────┼──────────────┼──────────────┼──────────────┼──────────────╯
-     ___            ___            ___            ___            ___            ___                                            ___            ___            ___            ___            ___            ___
-// ╰──────────────┴──────────────┴──────────────┴──────────────┴──────────────┴──────────────╯                               ╰──────────────┴──────────────┴──────────────┴──────────────┴──────────────┴──────────────╯
-         >;
-      };
+                // Left row 1 / right row 1
+                &kp CAPSLOCK  &kp A       &kp S       &kp D       &kp F       &kp G
+                &kp H         &kp J       &kp K       &kp L       &kp BSLH     &kp RET
 
+                // Left row 2 / center keys / right row 2
+                &kp LSHFT     &kp Z       &kp X       &kp C       &kp V       &kp B
+                &kp C_MUTE    &mkp MCLK   &kp N       &kp M       &kp COMMA   &kp DOT
+                &kp SLASH     &kp BSLH
 
-      mouse_layer {
-         display-name = "MOUSE";
-         bindings = <
-// ╭──────────────┬──────────────┬──────────────┬──────────────┬──────────────┬──────────────╮                               ╭──────────────┬──────────────┬──────────────┬──────────────┬──────────────┬──────────────╮
-     ___            ___            ___            ___            ___            ___                                            U_WH_U         U_WH_L         U_MS_U         U_WH_R         ___            ___   
-// ├──────────────┼──────────────┼──────────────┼──────────────┼──────────────┼──────────────┤                               ├──────────────┼──────────────┼──────────────┼──────────────┼──────────────┼──────────────┤
-     ___            ___            ___            ___            ___            ___                                            U_WH_D         U_MS_L         U_MS_D         U_MS_R         ___            ___   
-// ├──────────────┼──────────────┼──────────────┼──────────────┼──────────────┼──────────────┤──────────────╮ ╭──────────────├──────────────┼──────────────┼──────────────┼──────────────┼──────────────┼──────────────┤
-     ___            ___            ___            ___            ___            ___            ___              ___            ___            ___            ___            ___            ___            ___   
-// ╰──────────────┴──────────────┴──────────────┴──────────────┼──────────────┼──────────────┤──────────────╯ ╰──────────────├──────────────┼──────────────┼──────────────┼──────────────┼──────────────┼──────────────╯
-     ___            ___            ___            ___            ___            ___                                            &mkp LCLK      &mkp RCLK      ___            ___            ___            ___
-// ╰──────────────┴──────────────┴──────────────┴──────────────┴──────────────┴──────────────╯                               ╰──────────────┴──────────────┴──────────────┴──────────────┴──────────────┴──────────────╯ 
-         >;
-      };
+                // Left row 3 / right row 3
+                &kp LCTRL     &kp LALT    &kp LGUI    &to BASE     &mo NUM      &kp SPACE
+                &kp SPACE     &mo FN      &kp RSHFT   XXX          XXX          XXX
+            >;
+            sensor-bindings = <&inc_dec_kp C_VOL_DN C_VOL_UP
+                               &enc_scroll>;
+        };
 
-   }; // END keymap
-}; // END
+        number_layer {
+            display-name = "NUM";
+            bindings = <
+                // Left row 0 / right row 0
+                &kp ESC       &kp N1      &kp N2      &kp N3      &kp N4      &kp N5
+                &kp N6        &kp N7      &kp N8      &kp N9      &kp N0      &kp DEL
 
+                // Left row 1 / right row 1
+                XXX           &kp GRAVE   XXX         XXX         &kp SEMI    &kp MINUS
+                &kp EQUAL     &kp SQT     XXX         XXX         XXX         XXX
 
+                // Left row 2 / center keys / right row 2
+                &kp LSHFT     XXX         XXX         XXX         XXX         XXX
+                &kp C_MUTE    &mkp MCLK   XXX         XXX         XXX         XXX
+                &kp UP        XXX
 
+                // Left row 3 / right row 3
+                XXX           XXX         XXX         XXX         XXX         XXX
+                XXX           XXX         XXX         &kp LEFT     &kp DOWN     &kp RIGHT
+            >;
+            sensor-bindings = <&inc_dec_kp C_VOL_DN C_VOL_UP
+                               &enc_scroll>;
+        };
 
+        function_layer {
+            display-name = "FN";
+            bindings = <
+                // Left row 0 / right row 0
+                XXX           &kp F1      &kp F2      &kp F3      &kp F4      &kp F5
+                &kp F6        &kp F7      &kp F8      &kp F9      &kp F10     &kp F11
 
-// BLANK 
-// ╭──────────────┬──────────────┬──────────────┬──────────────┬──────────────┬──────────────╮                               ╭──────────────┬──────────────┬──────────────┬──────────────┬──────────────┬──────────────╮
-//   ___            ___            ___            ___            ___            ___                                            ___            ___            ___            ___            ___            ___   
-// ├──────────────┼──────────────┼──────────────┼──────────────┼──────────────┼──────────────┤                               ├──────────────┼──────────────┼──────────────┼──────────────┼──────────────┼──────────────┤
-//   ___            ___            ___            ___            ___            ___                                            ___            ___            ___            ___            ___            ___   
-// ├──────────────┼──────────────┼──────────────┼──────────────┼──────────────┼──────────────┤──────────────╮ ╭──────────────├──────────────┼──────────────┼──────────────┼──────────────┼──────────────┼──────────────┤
-//   ___            ___            ___            ___            ___            ___            ___              ___            ___            ___            ___            ___            ___            ___   
-// ╰──────────────┴──────────────┴──────────────┴──────────────┼──────────────┼──────────────┤──────────────╯ ╰──────────────├──────────────┼──────────────┼──────────────┼──────────────┼──────────────┼──────────────╯
-//   ___            ___            ___            ___            ___            ___                                            ___            ___            ___            ___            ___            ___
-// ╰──────────────┴──────────────┴──────────────┴──────────────┴──────────────┴──────────────╯                               ╰──────────────┴──────────────┴──────────────┴──────────────┴──────────────┴──────────────╯ 
+                // Left row 1 / right row 1
+                &bt BT_SEL 0  XXX         XXX         XXX         XXX         XXX
+                XXX           XXX         &kp PSCRN   &kp SCROLLLOCK &kp PAUSE_BREAK &kp F12
+
+                // Left row 2 / center keys / right row 2
+                &bt BT_SEL 1  XXX         XXX         XXX         XXX         XXX
+                &kp C_MUTE    &mkp MCLK   XXX         XXX         XXX         &kp INSERT
+                &kp HOME       &kp PG_UP
+
+                // Left row 3 / right row 3
+                &bt BT_SEL 2  XXX         XXX         XXX         XXX         XXX
+                XXX           XXX         XXX         &kp DEL       &kp END      &kp PG_DN
+            >;
+            sensor-bindings = <&inc_dec_kp C_VOL_DN C_VOL_UP
+                               &enc_scroll>;
+        };
+    };
+};
