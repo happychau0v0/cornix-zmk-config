@@ -36,6 +36,21 @@
             #sensor-binding-cells = <0>;
             bindings = <U_WH_U>, <U_WH_D>;
         };
+
+        /* Require two taps so the layer switches are not triggered accidentally. */
+        td_alt: td_alt {
+            compatible = "zmk,behavior-tap-dance";
+            #binding-cells = <0>;
+            tapping-term-ms = <250>;
+            bindings = <&none>, <&to ALT>;
+        };
+
+        td_base: td_base {
+            compatible = "zmk,behavior-tap-dance";
+            #binding-cells = <0>;
+            tapping-term-ms = <250>;
+            bindings = <&none>, <&to BASE>;
+        };
     };
 
     keymap {
@@ -58,7 +73,7 @@
                 &kp UP        &kp SLASH
 
                 // Left row 3 / right row 3
-                &kp LCTRL     &kp LGUI    &kp LALT    &to ALT      &mo NUM      &kp SPACE
+                &kp LCTRL     &kp LGUI    &kp LALT    &td_alt       &mo NUM      &kp SPACE
                 &kp SPACE     &mo FN      &kp RSHFT   &kp LEFT     &kp DOWN     &kp RIGHT
             >;
             sensor-bindings = <&inc_dec_kp C_VOL_DN C_VOL_UP
@@ -82,7 +97,7 @@
                 &kp SLASH     &kp BSLH
 
                 // Left row 3 / right row 3
-                &kp LCTRL     &kp LALT    &kp LGUI    &to BASE     &mo NUM      &kp SPACE
+                &kp LCTRL     &kp LALT    &kp LGUI    &td_base      &mo NUM      &kp SPACE
                 &kp SPACE     &mo FN      &kp RSHFT   XXX          XXX          XXX
             >;
             sensor-bindings = <&inc_dec_kp C_VOL_DN C_VOL_UP
