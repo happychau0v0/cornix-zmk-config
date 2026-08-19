@@ -6,17 +6,31 @@
 
 version: stock v1 choc
 
-## Firmware improvements
+## Firmware changes
 
-- The rotary encoder now supports mouse-wheel scrolling on both halves. The
-  right-half build includes the pointing support required for its scroll events
-  to reach the central half.
-- The ALT and BASE layer keys require a double-tap within 250 ms, reducing
-  accidental layer switches.
-- Bluetooth transmit power remains at the original `+8 dBm` setting.
-- The two RGB indicators retain the original status roles: the left half uses
-  its left LED for Bluetooth and right LED for battery/split status; the right
-  half uses its left LED for battery and right LED for split status.
+This fork keeps the stock Cornix hardware definition and adds the following
+firmware behavior:
+
+- NKRO is enabled for USB and Bluetooth HID with
+  `CONFIG_ZMK_HID_REPORT_TYPE_NKRO=y` and
+  `CONFIG_ZMK_HID_KEYBOARD_NKRO_EXTENDED_REPORT=y` in `config/cornix.conf`.
+  This allows the keyboard to report more simultaneous key presses than the
+  standard six-key boot keyboard report, subject to host support.
+- The active layers are ordered `BASE`, `NUM`, `FN`, and `PLOVER`. The former
+  ALT layout is now BASE. NUM and FN are momentary layers from BASE.
+- Double-tapping the BASE/PLOVER layer key within 250 ms switches layers and
+  sends the PHROLG steno chord (`E + R + F + V + O + L`) simultaneously. The
+  default Plover command dictionary maps PHROLG to `{PLOVER:TOGGLE}`. Plover
+  must already be running; ZMK only sends the chord and does not launch the
+  application. The PLOVER layer is intentionally left open for later mapping.
+- FN Bluetooth profile keys select profiles 0, 1, and 2 on tap. Holding one
+  for 600 ms selects that profile and clears its bond, providing a recovery
+  path when a host's saved Bluetooth keys no longer match the keyboard.
+- The second rotary encoder sends mouse-wheel events. The right-half build
+  includes pointing support so those events reach the central half.
+
+After clearing a Bluetooth bond, forget the Cornix on the host before pairing
+again. Reflashing firmware alone does not erase stored Bluetooth bonds.
 
 ## PCB layout
 
