@@ -30,7 +30,23 @@ config ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING
 config ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_PROXY
 	default y
 
+# The physical left LED is the Bluetooth indicator and the physical right LED
+# is the battery/split-status indicator on the left half.
+config RGBLED_WIDGET_BATTERY_LED_INDEX
+	default 1
+config RGBLED_WIDGET_CONN_LED_INDEX
+	default 0
+
 endif # BOARD_CORNIX_LEFT
+
+if BOARD_CORNIX_PH_LEFT
+
+config RGBLED_WIDGET_BATTERY_LED_INDEX
+	default 1
+config RGBLED_WIDGET_CONN_LED_INDEX
+	default 0
+
+endif # BOARD_CORNIX_PH_LEFT
 
 ## Peripheral device (right side)
 if BOARD_CORNIX_RIGHT || BOARD_CORNIX_PH_LEFT
@@ -46,6 +62,13 @@ config ZMK_KSCAN_DEBOUNCE_PRESS_MS
     default 3
 config ZMK_KSCAN_DEBOUNCE_RELEASE_MS
     default 3
+
+# The physical left LED is the battery indicator and the physical right LED
+# is the split-status indicator on the right half.
+config RGBLED_WIDGET_BATTERY_LED_INDEX
+	default 0
+config RGBLED_WIDGET_CONN_LED_INDEX
+	default 1
 
 endif # BOARD_CORNIX_RIGHT
 

@@ -16,3 +16,25 @@ Icon
 .Trashes
 .VolumeIcon.icns
 .com.apple.timemachine.donotpresent
+
+### Local development
+# west-managed dependencies
+.west/
+modules/
+optional/modules/
+prospector-zmk-module/
+zephyr/
+zmk/
+zmk-dongle-display/
+zmk-dongle-screen/
+zmk-helpers/
+zmk-rgbled-widget/
+
+# local Python environment and build output
+.venv/
+build/
+firmware/*.uf2
+
+# local reference files
+firmwareV1.12.zip
+Untitled.vil
