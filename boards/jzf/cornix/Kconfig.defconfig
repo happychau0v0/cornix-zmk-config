@@ -39,17 +39,8 @@ config RGBLED_WIDGET_CONN_LED_INDEX
 
 endif # BOARD_CORNIX_LEFT
 
-if BOARD_CORNIX_PH_LEFT
-
-config RGBLED_WIDGET_BATTERY_LED_INDEX
-	default 1
-config RGBLED_WIDGET_CONN_LED_INDEX
-	default 0
-
-endif # BOARD_CORNIX_PH_LEFT
-
 ## Peripheral device (right side)
-if BOARD_CORNIX_RIGHT || BOARD_CORNIX_PH_LEFT
+if BOARD_CORNIX_RIGHT
 
 config ZMK_SPLIT_ROLE_CENTRAL
     default n
@@ -63,8 +54,8 @@ config ZMK_KSCAN_DEBOUNCE_PRESS_MS
 config ZMK_KSCAN_DEBOUNCE_RELEASE_MS
     default 3
 
-# The physical left LED is the battery indicator and the physical right LED
-# is the split-status indicator on the right half.
+# The left LED is the battery indicator and the right LED is the split-status
+# indicator on the right half.
 config RGBLED_WIDGET_BATTERY_LED_INDEX
 	default 0
 config RGBLED_WIDGET_CONN_LED_INDEX
@@ -73,7 +64,7 @@ config RGBLED_WIDGET_CONN_LED_INDEX
 endif # BOARD_CORNIX_RIGHT
 
 # Common options for both sides
-if BOARD_CORNIX_LEFT  || BOARD_CORNIX_PH_LEFT || BOARD_CORNIX_RIGHT
+if BOARD_CORNIX_LEFT || BOARD_CORNIX_RIGHT
 
 
 #config BT_CTLR
