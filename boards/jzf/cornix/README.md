@@ -26,8 +26,11 @@ firmware behavior:
 - FN Bluetooth profile keys select profiles 0, 1, and 2 on tap. Holding one
   for 600 ms selects that profile and clears its bond, providing a recovery
   path when a host's saved Bluetooth keys no longer match the keyboard.
-- The second rotary encoder sends mouse-wheel events. The right-half build
-  includes pointing support so those events reach the central half.
+- The second rotary encoder sends mouse-wheel events. Its sensor binding holds
+  the ZMK mouse-scroll behavior for 20 ms, long enough for the first 16 ms
+  input tick to produce a discrete wheel report for each encoder event. The
+  right-half build includes pointing support so those events reach the central
+  half.
 
 After clearing a Bluetooth bond, forget the Cornix on the host before pairing
 again. Reflashing firmware alone does not erase stored Bluetooth bonds.

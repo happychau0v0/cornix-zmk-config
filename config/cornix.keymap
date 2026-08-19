@@ -34,6 +34,8 @@
         enc_scroll: enc_scroll {
             compatible = "zmk,behavior-sensor-rotate";
             #sensor-binding-cells = <0>;
+            /* msc emits its first report after 16 ms; keep each sensor tap alive. */
+            tap-ms = <20>;
             bindings = <U_WH_U>, <U_WH_D>;
         };
 
@@ -158,7 +160,7 @@
                 &kp LCTRL     &kp LALT    &kp LGUI    &td_plover    &mo NUM      &kp SPACE
                 &kp SPACE     &mo FN      &kp RSHFT   XXX          XXX          XXX
             >;
-            sensor-bindings = <&inc_dec_kp C_VOL_DN C_VOL_UP
+            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN
                                &enc_scroll>;
         };
 
@@ -182,7 +184,7 @@
                 XXX           XXX         XXX         XXX         XXX         XXX
                 XXX           XXX         XXX         &kp LEFT     &kp DOWN     &kp RIGHT
             >;
-            sensor-bindings = <&inc_dec_kp C_VOL_DN C_VOL_UP
+            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN
                                &enc_scroll>;
         };
 
@@ -206,7 +208,7 @@
                 &bt2_select_or_clear 0 0 XXX     XXX         XXX         XXX         XXX
                 XXX           XXX         XXX         &kp DEL       &kp END      &kp PG_DN
             >;
-            sensor-bindings = <&inc_dec_kp C_VOL_DN C_VOL_UP
+            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN
                                &enc_scroll>;
         };
 
@@ -230,7 +232,7 @@
                 XXX           XXX         XXX         &td_base      XXX          XXX
                 XXX           XXX         XXX         XXX          XXX          XXX
             >;
-            sensor-bindings = <&inc_dec_kp C_VOL_DN C_VOL_UP
+            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN
                                &enc_scroll>;
         };
 
